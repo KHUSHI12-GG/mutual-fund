@@ -330,7 +330,7 @@ const InsuranceDashboard = () => {
                   </div>
                   
                   <div className="flex space-x-3">
-                    <button className="flex-1 bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    <button className="flex-1 bg-green-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors">
                       Get Quote
                     </button>
                     <button className="flex-1 bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors">
@@ -391,7 +391,7 @@ const InsuranceDashboard = () => {
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex space-x-2">
-                        <button className="bg-blue-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        <button className="bg-green-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
                           Quote
                         </button>
                         <button className="bg-white border border-gray-300 text-gray-700 py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">

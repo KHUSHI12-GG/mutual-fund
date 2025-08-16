@@ -4,7 +4,16 @@ const LICPolicies = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('popularity');
-  
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    policy: '',
+    message: ''
+  });
+
   // Simulate loading state
   useEffect(() => {
     setIsLoading(true);
@@ -145,7 +154,7 @@ const LICPolicies = () => {
     if (sortBy === 'rating') return b.rating - a.rating;
     return b.popularity - a.popularity;
   });
-  
+
   // Render star ratings
   const renderStars = (rating) => {
     return (
@@ -174,18 +183,158 @@ const LICPolicies = () => {
     }).format(value);
   };
 
+  // Handle opening contact form
+  const openContactForm = (product) => {
+    setSelectedProduct(product);
+    setFormData({
+      ...formData,
+      policy: product.name
+    });
+    setShowContactForm(true);
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    alert('Thank you for your inquiry! A LIC representative will contact you shortly.');
+    setShowContactForm(false);
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      policy: '',
+      message: ''
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+      {/* Contact Form Popup */}
+      {showContactForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4 z-50 relative">
+            <button
+              onClick={() => setShowContactForm(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
+            >
+              &times;
+            </button>
+            
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Contact LIC Agent</h2>
+              <p className="text-gray-600 mt-2">
+                Interested in {selectedProduct?.name}
+              </p>
+            </div>
+            
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      placeholder="Enter your phone"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Policy Interested In
+                  </label>
+                  <input
+                    type="text"
+                    name="policy"
+                    value={formData.policy}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                    readOnly
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Message
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    rows="3"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="Any specific requirements or questions?"
+                  ></textarea>
+                </div>
+                
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                  >
+                    Submit Inquiry
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="bg-red-600 rounded-lg p-3 mr-4">
-              <img 
-                src="/lic-logo.png" 
-                alt="LIC Logo" 
-                className="w-16 h-16"
-              />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
             </div>
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
@@ -207,7 +356,7 @@ const LICPolicies = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-xl shadow-sm p-4 flex items-center">
             <div className="bg-red-100 p-3 rounded-lg mr-4">
-              <img src="/icons/policy.png" alt="Policy" className="w-6 h-6" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-6 h-6" />
             </div>
             <div>
               <p className="text-gray-500 text-sm">Policy Types</p>
@@ -217,7 +366,7 @@ const LICPolicies = () => {
           
           <div className="bg-white rounded-xl shadow-sm p-4 flex items-center">
             <div className="bg-green-100 p-3 rounded-lg mr-4">
-              <img src="/icons/customers.png" alt="Customers" className="w-6 h-6" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-6 h-6" />
             </div>
             <div>
               <p className="text-gray-500 text-sm">Active Customers</p>
@@ -227,7 +376,7 @@ const LICPolicies = () => {
           
           <div className="bg-white rounded-xl shadow-sm p-4 flex items-center">
             <div className="bg-blue-100 p-3 rounded-lg mr-4">
-              <img src="/icons/claim.png" alt="Claim" className="w-6 h-6" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-6 h-6" />
             </div>
             <div>
               <p className="text-gray-500 text-sm">Claim Settlement Ratio</p>
@@ -237,7 +386,7 @@ const LICPolicies = () => {
           
           <div className="bg-white rounded-xl shadow-sm p-4 flex items-center">
             <div className="bg-yellow-100 p-3 rounded-lg mr-4">
-              <img src="/icons/agent.png" alt="Agent" className="w-6 h-6" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-6 h-6" />
             </div>
             <div>
               <p className="text-gray-500 text-sm">Insurance Agents</p>
@@ -327,11 +476,7 @@ const LICPolicies = () => {
                       </div>
                     </div>
                     <div className="bg-gray-100 p-2 rounded-lg">
-                      <img 
-                        src="/lic-icon.png" 
-                        alt="LIC" 
-                        className="w-8 h-8"
-                      />
+                      <div className="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8" />
                     </div>
                   </div>
                   
@@ -373,8 +518,11 @@ const LICPolicies = () => {
                   </div>
                   
                   <div className="flex space-x-3">
-                    <button className="flex-1 bg-red-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                      Buy Now
+                    <button 
+                      onClick={() => openContactForm(product)}
+                      className="flex-1 bg-red-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                    >
+                      Contact us
                     </button>
                     <button className="flex-1 bg-white border border-gray-300 text-gray-700 py-2.5 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors">
                       Details
@@ -406,11 +554,7 @@ const LICPolicies = () => {
                     <td className="py-4 px-6">
                       <div className="flex items-center">
                         <div className="bg-gray-100 p-2 rounded-lg mr-4">
-                          <img 
-                            src="/lic-icon.png" 
-                            alt="LIC" 
-                            className="w-8 h-8"
-                          />
+                          <div className="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8" />
                         </div>
                         <div>
                           <div className="font-medium text-gray-900">{product.name}</div>
@@ -428,8 +572,11 @@ const LICPolicies = () => {
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex space-x-2">
-                        <button className="bg-red-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
-                          Buy
+                        <button 
+                          onClick={() => openContactForm(product)}
+                          className="bg-red-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                        >
+                          Contact us
                         </button>
                         <button className="bg-white border border-gray-300 text-gray-700 py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
                           Details
@@ -449,23 +596,23 @@ const LICPolicies = () => {
             <h3 className="text-xl font-bold mb-4">Why Choose LIC?</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <img src="/icons/check-circle.png" alt="Check" className="w-5 h-5 mr-3 mt-1" />
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-5 h-5 mr-3 mt-1" />
                 <span>Government-owned and trusted by millions</span>
               </li>
               <li className="flex items-start">
-                <img src="/icons/check-circle.png" alt="Check" className="w-5 h-5 mr-3 mt-1" />
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-5 h-5 mr-3 mt-1" />
                 <span>Highest claim settlement ratio in the industry</span>
               </li>
               <li className="flex items-start">
-                <img src="/icons/check-circle.png" alt="Check" className="w-5 h-5 mr-3 mt-1" />
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-5 h-5 mr-3 mt-1" />
                 <span>Pan-India presence with 2,048 branches</span>
               </li>
               <li className="flex items-start">
-                <img src="/icons/check-circle.png" alt="Check" className="w-5 h-5 mr-3 mt-1" />
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-5 h-5 mr-3 mt-1" />
                 <span>Over 1.3 million agents for personalized service</span>
               </li>
               <li className="flex items-start">
-                <img src="/icons/check-circle.png" alt="Check" className="w-5 h-5 mr-3 mt-1" />
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-5 h-5 mr-3 mt-1" />
                 <span>Tax benefits under Section 80C and 10(10D)</span>
               </li>
             </ul>
@@ -519,21 +666,21 @@ const LICPolicies = () => {
           <h3 className="text-xl font-bold text-gray-800 mb-4">LIC Customer Support</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex items-center">
-              <img src="/icons/phone.png" alt="Phone" className="w-8 h-8 mr-4" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8 mr-4" />
               <div>
                 <p className="text-gray-500 text-sm">Toll-Free Number</p>
                 <p className="font-bold">1800 123 4567</p>
               </div>
             </div>
             <div className="flex items-center">
-              <img src="/icons/email.png" alt="Email" className="w-8 h-8 mr-4" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8 mr-4" />
               <div>
                 <p className="text-gray-500 text-sm">Email Support</p>
                 <p className="font-bold">care@licindia.com</p>
               </div>
             </div>
             <div className="flex items-center">
-              <img src="/icons/branch.png" alt="Branch" className="w-8 h-8 mr-4" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8 mr-4" />
               <div>
                 <p className="text-gray-500 text-sm">Branch Locator</p>
                 <p className="font-bold">2,048+ Branches</p>
